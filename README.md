@@ -2,7 +2,7 @@
 
 **Agree on what counts as done. Check the delivery. Pay by the agreed rules.**
 
-**[▶ Run it in your browser](https://MADHAN_USER.github.io/REPO_NAME/)** — the published page runs the
+**[▶ Run it in your browser](https://madhanj05.github.io/Sterling/)** — the published page runs the
 real contracts in an Ethereum VM inside your own tab. It is not a recording or a mock: the bytecode
 is the same compiled output the test suite uses, the transactions are real transactions, and the
 escrow enforces the same four rules. Two demonstrations are missing there because a browser tab
@@ -242,7 +242,7 @@ contract-enforced settlement should not ship on a red build.
 
 ```bash
 npm run build:static          # the same build the workflow makes, into dist/
-BASE_PATH="/acceptance-mvp/" npm run build:static   # as a project site would be served
+BASE_PATH="/Sterling/" npm run build:static   # as a project site would be served
 ```
 
 `VITE_STATIC=1` swaps the backend from the local Node server to an EVM in the browser. Both drive
