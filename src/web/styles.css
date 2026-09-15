@@ -192,7 +192,7 @@ code, .mono { font-size: 0.8em; letter-spacing: -0.005em; }
 .dim  { color: var(--ink-3); }
 
 /* Shell ------------------------------------------------------------------- */
-.shell { min-height: 100vh; position: relative; isolation: isolate; }
+.shell { min-height: 100vh; position: relative; isolation: isolate; overflow-x: clip; }
 .shell::before {
   content: ""; position: fixed; inset: 0; z-index: -2;
   background: var(--atmosphere);
@@ -313,7 +313,7 @@ a { color: var(--beam); text-decoration: none; }
 .between { display: flex; align-items: center; justify-content: space-between; gap: var(--s4); }
 
 /* Hero -------------------------------------------------------------------- */
-.hero { padding-block: var(--s10) var(--s8); text-align: center; position: relative; }
+.hero { padding-block: var(--s10) var(--s8); text-align: center; position: relative; overflow: clip; }
 
 /*
  * The derived backdrop. Masked out of the centre so it is never behind readable text, and held
@@ -537,5 +537,29 @@ textarea.rows:focus-visible { border-color: var(--beam); box-shadow: var(--focus
 .themes button { border: none; background: transparent; box-shadow: none; border-radius: 980px; padding: 4px 10px; font: 600 0.625rem/1.4 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); }
 .themes button:hover:not(:disabled) { transform: none; box-shadow: none; color: var(--ink-2); }
 .themes button[aria-pressed="true"] { background: var(--raised); color: var(--ink); box-shadow: var(--cast); }
+
+/* Touch ------------------------------------------------------------------- */
+@media (pointer: coarse) {
+  /* Apple's 44pt minimum. A control you cannot reliably hit is not a control. */
+  button, .segment button, .themes button { min-height: 44px; }
+  details.fold > summary, details.bay-panel > summary { min-height: 44px; }
+}
+
+/* Narrow ------------------------------------------------------------------ */
+@media (max-width: 680px) {
+  /* Long labels must wrap rather than force the page wider than the screen. */
+  button { white-space: normal; text-align: center; }
+  .display { letter-spacing: -0.028em; }
+  .hero { padding-block: var(--s8) var(--s6); }
+  .statusbar .readout { font-size: 0.625rem; }
+  .verdict { grid-template-columns: 1fr; gap: var(--s3); }
+  .facts { grid-template-columns: 1fr; gap: var(--s1) 0; }
+  .facts dd { margin-bottom: var(--s3); }
+  .phase { grid-template-columns: 22px minmax(0, 1fr); gap: var(--s3); }
+  .panel-head { flex-wrap: wrap; }
+  /* A wide table scrolls inside its own box, never by moving the page. */
+  table { display: block; overflow-x: auto; white-space: nowrap; }
+  .pad { padding: var(--s4); }
+}
 
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
