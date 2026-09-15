@@ -1,0 +1,103 @@
+{
+  "_comment": [
+    "Hand-written before the checker was run against any fixture. These expectations are the",
+    "specification; the checker is judged against them, never the other way round. If the checker",
+    "disagrees with a line here, the checker is wrong until the line is argued down on its merits.",
+    "",
+    "Evaluation order is frozen: rule 1, then rule 2 (unknown IDs first in delivery order, then",
+    "missing/duplicate scanned in the order the source array is stored), then rule 3, then rule 4.",
+    "Only the FIRST violation in that order is reported, which is why a delivery with several",
+    "problems names only one rule."
+  ],
+  "source": "source-batch-1.json",
+  "requiredRowCount": 12,
+  "cases": [
+    {
+      "output": "output-correct.json",
+      "verdict": "PASS",
+      "ruleId": 0,
+      "failCode": 0,
+      "why": "12 rows, every source ID exactly once, no extra IDs, all prices unchanged, IDs strictly increasing 1001..1012."
+    },
+    {
+      "output": "output-missing-row.json",
+      "verdict": "FAIL",
+      "ruleId": 1,
+      "failCode": 1,
+      "failCodeName": "ROW_COUNT_MISMATCH",
+      "detailA": 11,
+      "detailB": 12,
+      "why": "Product 1006 was dropped, so the delivery has 11 rows against an agreed 12. Rule 1 is checked first, so this is reported as a row-count failure rather than a missing-ID failure."
+    },
+    {
+      "output": "output-missing-source-id.json",
+      "verdict": "FAIL",
+      "ruleId": 2,
+      "failCode": 2,
+      "failCodeName": "MISSING_SOURCE_ID",
+      "detailA": 1002,
+      "detailB": 0,
+      "why": "Product 1002 was replaced by a second copy of 1010. The row count is still 12 so rule 1 passes; no ID is outside the source so the unknown-ID check passes. The source array is stored in the order 1007, 1002, 1011, ... so the scan reaches 1002 (missing, 0 occurrences) before it reaches 1010 (duplicated)."
+    },
+    {
+      "output": "output-duplicate-id.json",
+      "verdict": "FAIL",
+      "ruleId": 2,
+      "failCode": 3,
+      "failCodeName": "DUPLICATE_SOURCE_ID",
+      "detailA": 1007,
+      "detailB": 2,
+      "why": "Product 1005 was replaced by a second copy of 1007. Row count still 12, no unknown IDs. The stored source order begins with 1007, so the duplicate is found before the missing 1005."
+    },
+    {
+      "output": "output-unknown-id.json",
+      "verdict": "FAIL",
+      "ruleId": 2,
+      "failCode": 4,
+      "failCodeName": "UNKNOWN_ID",
+      "detailA": 9999,
+      "detailB": 11,
+      "why": "Product 1003 was replaced with invented product 9999 at price 111.11. Row count is still 12. The unknown-ID check runs before the missing/duplicate check, so 9999 is reported. It sits at delivery row index 11 because the delivery is sorted and 9999 is the largest ID."
+    },
+    {
+      "output": "output-wrong-price.json",
+      "verdict": "FAIL",
+      "ruleId": 3,
+      "failCode": 5,
+      "failCodeName": "PRICE_MISMATCH",
+      "detailA": 1009,
+      "detailB": 349900,
+      "why": "Product 1009's price was changed from 3499.00 to 3490.00. Rules 1 and 2 are satisfied. detailB carries the approved price; the submitted price is in contract storage and is shown next to it in the interface."
+    },
+    {
+      "output": "output-wrong-order.json",
+      "verdict": "FAIL",
+      "ruleId": 4,
+      "failCode": 6,
+      "failCodeName": "ORDER_VIOLATION",
+      "detailA": 1005,
+      "detailB": 1006,
+      "why": "Contents are completely correct; only the sort is wrong. 1005 and 1006 are swapped, so at delivery row 5 the ID 1005 is not greater than the preceding 1006. This is the case that shows a delivery can be right in substance and still fail an agreed term."
+    }
+  ],
+  "templateReuse": [
+    { "source": "source-batch-2.json", "output": "output-batch-2-correct.json", "requiredRowCount": 8, "verdict": "PASS", "why": "Same pack template, different batch: 8 products, IDs 2001..2008, unrelated prices." },
+    { "source": "source-batch-3.json", "output": "output-batch-3-correct.json", "requiredRowCount": 20, "verdict": "PASS", "why": "Same pack template, 20 products, IDs 3001..3020, source stored in descending order to confirm the checker does not assume a sorted source." }
+  ],
+  "unsupportedScope": {
+    "clause": "Make the product descriptions persuasive.",
+    "coverage": "JUDGEMENT",
+    "expected": "The pack reports unsupportedClauseCount = 1 and fullyAutomatic = false. AcceptanceEscrow.createJob reverts with UnsupportedClausesPresent(1). The only route forward is an explicit scope revision producing pack version 2, in which the clause is still listed and visibly marked EXCLUDED_BY_REVISION with its reason. The clause is never deleted, and the revision cannot alter a job that already exists.",
+    "why": "There is no committed predicate for 'persuasive'. Two competent reviewers can read the same bytes and disagree, so no check in this pack can settle it. Marking it executable would be a lie about what the software can do."
+  },
+  "importBoundary": [
+    { "file": "bad-malformed.json", "code": "MALFORMED_JSON", "why": "Trailing comma. Not valid JSON." },
+    { "file": "bad-fractional-price.json", "code": "PRICE_NOT_INTEGER", "why": "12.99 is not an integer number of cents. Money is never floating point and is never rounded silently." },
+    { "file": "bad-unknown-field.json", "code": "UNKNOWN_FIELD", "why": "A 'description' field exists. Version 1 cannot carry it, and dropping it silently would hide part of the delivery, so the import is rejected." },
+    { "file": "bad-price-as-string.json", "code": "PRICE_NOT_NUMBER", "why": "\"1299\" is a string. No coercion." },
+    { "file": "bad-duplicate-key.json", "code": "DUPLICATE_KEY", "why": "priceCents appears twice in one object. JSON.parse would silently keep the last value." },
+    { "file": "bad-oversized.json", "code": "TOO_MANY_ROWS", "why": "40 rows against the documented bound of 32. A bounded rejection, not a finding about delivered work." },
+    { "file": "bad-unsafe-integer.json", "code": "PRICE_NOT_SAFE_INTEGER", "why": "9007199254740993 cannot survive JSON.parse exactly. Representable on-chain as uint64, not importable from JSON in version 1." },
+    { "file": "bad-negative-id.json", "code": "ID_OUT_OF_RANGE", "why": "productId is unsigned." }
+  ]
+}

@@ -1,0 +1,34 @@
+[
+  {
+    "productId": 2005,
+    "priceCents": 1000000
+  },
+  {
+    "productId": 2001,
+    "priceCents": 9900
+  },
+  {
+    "productId": 2008,
+    "priceCents": 5599
+  },
+  {
+    "productId": 2003,
+    "priceCents": 187500
+  },
+  {
+    "productId": 2002,
+    "priceCents": 250
+  },
+  {
+    "productId": 2007,
+    "priceCents": 64
+  },
+  {
+    "productId": 2004,
+    "priceCents": 42
+  },
+  {
+    "productId": 2006,
+    "priceCents": 733
+  }
+]

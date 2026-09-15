@@ -1,0 +1,11 @@
+node_modules/
+build/
+dist/
+deployments/
+.env
+.DS_Store
+
+# Everything under evidence/ is produced by running the demonstration and is regenerable with
+# `npm run demo`, `npm run smoke` and `npm run benchmark`. Full-page 2x captures ran to 61 MB, which
+# does not belong in a repository.
+evidence/

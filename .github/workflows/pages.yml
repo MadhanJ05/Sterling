@@ -1,0 +1,67 @@
+name: Deploy the demonstration to GitHub Pages
+
+# The published page runs the real contracts in an EVM inside the visitor's browser. It is not a
+# recording. What it cannot do — the buyer and supplier as separate OS processes, and the
+# unauthorized-action demonstrations — is absent from it and said so in the interface.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deployment at a time; never cancel one midway.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    name: Test before publishing
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run compile
+      - run: npm run typecheck
+      # The full suite spins up a local chain per file; it is the thing that makes the published
+      # page trustworthy, so it gates the deploy rather than running alongside it.
+      - run: npm test
+
+  build:
+    name: Build the static demonstration
+    needs: verify
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Build
+        # A project site is served from /<repo>/, so the asset base must match.
+        run: BASE_PATH="/${GITHUB_REPOSITORY#*/}/" npm run build:static
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    name: Publish
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

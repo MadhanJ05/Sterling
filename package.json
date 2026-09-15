@@ -1,0 +1,48 @@
+{
+  "name": "acceptance-mvp",
+  "version": "1.0.0",
+  "description": "Agree on what counts as done. Check the delivery. Pay by the agreed rules. Local demonstration.",
+  "scripts": {
+    "compile": "tsx src/chain/compile.ts",
+    "start": "tsx src/server/index.ts",
+    "demo": "tsx scripts/demo.ts",
+    "verify": "tsx scripts/verify-bundle.ts",
+    "vectors": "python3 scripts/gen-golden-vectors.py",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "build": "vite build",
+    "reset": "rm -rf build dist evidence/demo evidence/sessions evidence/benchmark.json",
+    "smoke": "tsx scripts/browser-smoke.ts",
+    "deploy:testnet": "tsx scripts/deploy-testnet.ts",
+    "serve": "NODE_ENV=production tsx src/server/index.ts",
+    "benchmark": "tsx scripts/benchmark.ts",
+    "build:static": "npm run compile && VITE_STATIC=1 vite build",
+    "preview:static": "vite preview --outDir ../../dist"
+  },
+  "type": "module",
+  "dependencies": {
+    "@openzeppelin/contracts": "5.4.0",
+    "ethers": "6.17.0",
+    "express": "5.1.0",
+    "ganache": "7.9.2",
+    "solc": "0.8.37"
+  },
+  "devDependencies": {
+    "@types/express": "5.0.3",
+    "@types/node": "24.7.0",
+    "@types/react": "19.2.2",
+    "@types/react-dom": "19.2.1",
+    "@vitejs/plugin-react": "6.1.1",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "tsx": "4.20.6",
+    "typescript": "5.9.3",
+    "vite": "8.2.2",
+    "vitest": "3.2.7"
+  },
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  }
+}

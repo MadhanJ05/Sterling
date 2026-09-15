@@ -1,0 +1,50 @@
+[
+  {
+    "productId": 1001,
+    "priceCents": 1299
+  },
+  {
+    "productId": 1002,
+    "priceCents": 4550
+  },
+  {
+    "productId": 1004,
+    "priceCents": 22300
+  },
+  {
+    "productId": 1005,
+    "priceCents": 150
+  },
+  {
+    "productId": 1006,
+    "priceCents": 7999
+  },
+  {
+    "productId": 1007,
+    "priceCents": 65000
+  },
+  {
+    "productId": 1008,
+    "priceCents": 1
+  },
+  {
+    "productId": 1009,
+    "priceCents": 349900
+  },
+  {
+    "productId": 1010,
+    "priceCents": 12045
+  },
+  {
+    "productId": 1011,
+    "priceCents": 500
+  },
+  {
+    "productId": 1012,
+    "priceCents": 99999
+  },
+  {
+    "productId": 9999,
+    "priceCents": 11111
+  }
+]
