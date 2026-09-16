@@ -198,17 +198,15 @@ export function App() {
         <span className="tag">Acceptance infrastructure · local demonstration</span>
         <h1 className="display">Agree on what counts as done.</h1>
         <p className="lede">
-          Agents are starting to buy work from one another — a job goes out, a result comes back,
-          and payment settles with no human reading either one. So who decides the work was
-          acceptable? Not the buyer, who would rather not pay. Not the provider, who would rather be
-          paid. Neither can judge its own case.
+          Agents are starting to buy work from one another. A job goes out, a result comes back,
+          and payment settles — with no human reading either one.
         </p>
-        <p className="lede second">
-          So they settle it first. Both sides approve a checklist of what finished work looks
-          like, written so software can check it. The payment goes into escrow, the work is
-          delivered, and a contract runs exactly those checks against exactly what arrived — then
-          pays or refunds. Nobody, including whoever deployed the contract, can overrule the answer.
+
+        <p className="tension">
+          So who decides the work was acceptable? Not the buyer, who would rather not pay. Not the
+          provider, who would rather be paid. <strong>Neither can judge its own case.</strong>
         </p>
+
         <div className="cta">
           <button className="beam lg" onClick={() => runAutomatic("pass")} disabled={!!busy || booting}>
             {busy === "auto:pass" && <span className="spin" />}
@@ -228,11 +226,34 @@ export function App() {
         )}
       </header>
 
+      {/* How it works — the three beats the prose used to bury ------------- */}
+      <section className="bay beats">
+        <ol className="grid">
+          {[
+            { n: "01", k: "Agree", h: "Before any work starts",
+              d: "Both sides approve a checklist of what finished work looks like — written so that software can check it, not so that a person can argue about it." },
+            { n: "02", k: "Check", h: "Against exactly what arrived",
+              d: "The payment goes into escrow and the work is delivered. A contract runs those exact checks against the exact bytes it stored." },
+            { n: "03", k: "Settle", h: "On the result, by nobody",
+              d: "It pays the provider or refunds the buyer on the answer. Nobody — including whoever deployed the contract — can overrule it." },
+          ].map((b) => (
+            <li className="beat col-4" key={b.n}>
+              <span className="beat-n">{b.n}</span>
+              <div>
+                <h2 className="beat-k">{b.k}</h2>
+                <p className="beat-h">{b.h}</p>
+                <p className="note">{b.d}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </section>
+
       {/* Launch bays ------------------------------------------------------- */}
       <section className="bay" style={{ paddingBottom: "var(--s8)" }}>
         <div className="grid">
           <div className="col-6">
-            <div className="panel lit lifted" style={{ height: "100%" }}>
+            <div className="panel lit lifted">
               <div className="panel-head">
                 <div>
                   <span className="tag">Sequence</span>
@@ -242,10 +263,9 @@ export function App() {
               </div>
               <div className="pad stack">
                 <p className="body-2">
-                  One click runs the whole thing: the buyer agent proposes an agreement, the provider
-                  agent re-derives it from the contract and accepts, the buyer funds the escrow, and
-                  the provider delivers. Checking and payment happen in the same transaction. The step
-                  list appears when the run finishes — it is a log, not a live feed.
+                  All three beats, end to end, in one click. Checking and payment happen in the same
+                  transaction. The step list appears when the run finishes — it is a log, not a live
+                  feed.
                 </p>
                 {running
                   ? <p className="note"><span className="spin" style={{ display: "inline-block", verticalAlign: "-2px", marginRight: 9 }} />Running…</p>
@@ -255,7 +275,7 @@ export function App() {
           </div>
 
           <div className="col-6">
-            <div className="panel" style={{ height: "100%" }}>
+            <div className="panel">
               <div className="panel-head">
                 <div>
                   <span className="tag">Reuse</span>

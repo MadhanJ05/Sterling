@@ -159,6 +159,7 @@ code, .mono { font-size: 0.8em; letter-spacing: -0.005em; }
   display: grid;
   grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
   gap: var(--s5);
+  align-items: start;
 }
 @media (max-width: 1080px) { .grid { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
 @media (max-width: 680px)  { .grid { grid-template-columns: minmax(0, 1fr); } }
@@ -342,8 +343,49 @@ a { color: var(--beam); text-decoration: none; }
   .af-arc, .af-agent, .af-lattice { animation: none; }
 }
 .hero .display { margin-inline: auto; max-width: 14ch; text-wrap: balance; }
-.hero .lede { margin: var(--s5) auto 0; max-width: 56ch; text-wrap: pretty; }
-.hero .lede.second { margin-top: var(--s4); }
+.hero .lede { margin: var(--s5) auto 0; max-width: 54ch; text-wrap: pretty; }
+
+/*
+ * The turn. The lede states the situation; this states the problem and then names it. The closing
+ * clause is the thesis of the whole product, so it is the one sentence allowed to raise its voice.
+ */
+.hero .tension {
+  margin: var(--s5) auto 0;
+  max-width: 50ch;
+  font: 400 1.125rem/1.6 var(--sans);
+  letter-spacing: -0.014em;
+  color: var(--ink-2);
+  text-wrap: pretty;
+}
+.hero .tension strong {
+  display: block;
+  margin-top: var(--s3);
+  font: 600 1.375rem/1.35 var(--sans);
+  letter-spacing: -0.024em;
+  color: var(--ink);
+}
+
+/* The three beats ---------------------------------------------------------- */
+.beats { padding-block: 0 var(--s8); }
+.beats ol { margin: 0; padding: 0; list-style: none; }
+.beat {
+  display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--s4);
+  align-items: start; position: relative;
+  padding-top: var(--s5);
+  border-top: 1px solid var(--edge);
+}
+/* A hairline of light on the first beat: the sequence starts here. */
+.beat:first-child::before {
+  content: ""; position: absolute; left: 0; top: -1px; width: 38%; height: 1px;
+  background: linear-gradient(90deg, var(--beam-line), transparent);
+}
+.beat-n {
+  font: 600 0.6875rem/1 var(--mono); letter-spacing: 0.14em;
+  color: var(--beam); padding-top: 4px;
+}
+.beat-k { font: 600 1.125rem/1.2 var(--sans); letter-spacing: -0.02em; }
+.beat-h { font-size: 0.8125rem; color: var(--ink-3); margin-top: 3px; }
+.beat .note { margin-top: var(--s3); }
 .hero .tag { display: block; margin-bottom: var(--s5); }
 .hero .cta { margin-top: var(--s7); display: flex; gap: var(--s3); justify-content: center; flex-wrap: wrap; }
 
@@ -554,6 +596,9 @@ textarea.rows:focus-visible { border-color: var(--beam); box-shadow: var(--focus
   .hero { padding-block: var(--s8) var(--s6); }
   .statusbar .readout { font-size: 0.625rem; }
   .verdict { grid-template-columns: 1fr; gap: var(--s3); }
+  .hero .tension strong { font-size: 1.1875rem; }
+  .beats { padding-bottom: var(--s6); }
+  .beat { padding-top: var(--s4); gap: var(--s3); }
   .facts { grid-template-columns: 1fr; gap: var(--s1) 0; }
   .facts dd { margin-bottom: var(--s3); }
   .phase { grid-template-columns: 22px minmax(0, 1fr); gap: var(--s3); }
