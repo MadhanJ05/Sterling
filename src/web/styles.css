@@ -343,6 +343,7 @@ a { color: var(--beam); text-decoration: none; }
 }
 .hero .display { margin-inline: auto; max-width: 14ch; text-wrap: balance; }
 .hero .lede { margin: var(--s5) auto 0; max-width: 56ch; text-wrap: pretty; }
+.hero .lede.second { margin-top: var(--s4); }
 .hero .tag { display: block; margin-bottom: var(--s5); }
 .hero .cta { margin-top: var(--s7); display: flex; gap: var(--s3); justify-content: center; flex-wrap: wrap; }
 

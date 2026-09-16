@@ -198,11 +198,16 @@ export function App() {
         <span className="tag">Acceptance infrastructure · local demonstration</span>
         <h1 className="display">Agree on what counts as done.</h1>
         <p className="lede">
-          One program hires another to normalise a small product catalogue. Before any work starts,
-          both sides approve a checklist of what counts as finished. The buyer locks a test payment.
-          The supplier submits its result. A contract on a local chain runs the agreed checks on the
-          exact bytes that were submitted, and releases or refunds accordingly. Nobody involved —
-          including whoever deployed the contract — can override that outcome.
+          Agents are starting to buy work from one another — a job goes out, a result comes back,
+          and payment settles with no human reading either one. So who decides the work was
+          acceptable? Not the buyer, who would rather not pay. Not the supplier, who would rather be
+          paid. Neither can judge its own case.
+        </p>
+        <p className="lede second">
+          So they settle it first. Both sides approve a checklist of what finished work looks
+          like, written so software can check it. The payment goes into escrow, the work is
+          delivered, and a contract runs exactly those checks against exactly what arrived — then
+          pays or refunds. Nobody, including whoever deployed the contract, can overrule the answer.
         </p>
         <div className="cta">
           <button className="beam lg" onClick={() => runAutomatic("pass")} disabled={!!busy || booting}>

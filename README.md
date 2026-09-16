@@ -10,14 +10,18 @@ genuinely cannot perform them — see [What the published page cannot do](#what-
 
 ![The demonstration](docs/images/preview.png)
 
-One program hires another to normalise a small product catalogue. Before any work starts, both
-sides approve an **acceptance pack**: a plain-language checklist, a coverage report saying which
-clauses software can actually check, and the payment and expiry policy. The buyer locks a test
-payment. The supplier submits its result. A contract on a local chain runs the agreed rules against
-the exact bytes it stored and releases or refunds accordingly.
+Agents are starting to buy work from one another — a job goes out, a result comes back, and
+payment settles with no human reading either one. So who decides the work was acceptable? Not the
+buyer, who would rather not pay. Not the supplier, who would rather be paid. Neither can judge its
+own case, and nobody is going to review ten thousand small jobs by hand.
 
-Nobody involved can override that outcome — including whoever deployed the contract. That is a
-testable property of this code, not a slogan: see `tests/no-bypass.test.ts`.
+So they settle it first. Both sides approve an **acceptance pack**: a plain-language checklist, a
+coverage report saying which clauses software can actually check, and the payment and expiry
+policy. The payment goes into escrow, the work is delivered, and a contract runs exactly those
+rules against exactly the bytes it stored — then pays the supplier or refunds the buyer.
+
+Nobody can overrule that answer, including whoever deployed the contract. That is a testable
+property of this code, not a slogan: see `tests/no-bypass.test.ts`.
 
 > **Local simulation.** Synthetic data, disposable accounts, a mock ERC-20 with no value, no real
 > money and no paid model calls. Every participant is controlled by one operator. Passing these
