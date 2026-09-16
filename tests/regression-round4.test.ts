@@ -127,7 +127,7 @@ describe("R4 — transfer summaries must be reconciled with the movements they c
 
   it("rejects a summary naming a recipient the movements do not show", async () => {
     await expectRejected("wrong-paid-to", (b) => {
-      b.observedTransfers.paidTo = b.job.buyer; // the movements show the supplier
+      b.observedTransfers.paidTo = b.job.buyer; // the movements show the provider
     });
   });
 
@@ -181,8 +181,8 @@ describe("R4 — transfer summaries must be reconciled with the movements they c
     });
   });
 
-  it("rejects a refunded job whose movements show the supplier being paid", async () => {
-    await expectRejected("refund-paid-to-supplier", (b) => {
+  it("rejects a refunded job whose movements show the provider being paid", async () => {
+    await expectRejected("refund-paid-to-provider", (b) => {
       const out = b.observedTransfers.transfers.find((t) => t.direction === "out")!;
       out.to = b.job.provider;
       b.observedTransfers.paidTo = b.job.provider;

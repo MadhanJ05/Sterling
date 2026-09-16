@@ -3,7 +3,7 @@
  *
  * Two agents, one agreement, drawn as an instrument rather than an illustration: two nodes, a
  * link between them, and a lattice of commitments around it. There is deliberately no robot, no
- * face and no neural mesh here — the status bar says the buyer and supplier are deterministic
+ * face and no neural mesh here — the status bar says the buyer and provider agents are deterministic
  * programs rather than language models, and the artwork must not quietly imply otherwise.
  *
  * The geometry is DERIVED, not drawn: every node position, size and connection comes from the
@@ -71,7 +71,7 @@ export function AgentField({ seed }: { seed?: string }) {
     }
   }
 
-  // The agreement: one arc from buyer to supplier, meeting at the point of verification.
+  // The agreement: one arc from buyer to provider, meeting at the point of verification.
   // Routed over the top, through the band the mask leaves visible. An arc whose centre is masked
   // away says nothing, which is what the first attempt did.
   const arc = `M ${a.x} ${a.y} C ${W * 0.28} ${H * 0.04}, ${W * 0.72} ${H * 0.04}, ${b.x} ${b.y}`;

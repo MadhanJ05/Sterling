@@ -3,12 +3,12 @@
  *
  * The independent review of 14 September 2026 found the real gap in this project: every party
  * checked that fingerprints matched, and nobody checked that the things being fingerprinted
- * agreed with each other. A supplier would happily accept a pack advertising 25 test dollars for
+ * agreed with each other. A provider would happily accept a pack advertising 25 test dollars for
  * a job worth 1, or a pack naming a source batch the contract had never seen, because each
  * commitment was individually well formed.
  *
  * This module is the one place that answers "do all of these actually describe the same job?".
- * It runs before creation, before supplier acceptance, before funding, and inside evidence
+ * It runs before creation, before provider acceptance, before funding, and inside evidence
  * verification. It is deliberately a single implementation used by all four, so the four cannot
  * drift apart.
  *

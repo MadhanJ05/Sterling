@@ -42,7 +42,7 @@ endogenous-fact boundary: "do these bytes satisfy this committed predicate" is a
 
 ## 4. Trust that remains
 
-- **The operator controls everything.** Buyer, supplier, deployer, unrelated account, the chain and
+- **The operator controls everything.** Buyer, provider, deployer, unrelated account, the chain and
   the clock are all one person. Nothing here is an arms-length transaction. The interface says this
   on every screen.
 - **The chain is disposable and local.** `advanceTime` calls `evm_increaseTime`. There is no
@@ -73,11 +73,11 @@ endogenous-fact boundary: "do these bytes satisfy this committed predicate" is a
   What does close it, for a party running this software, is `src/shared/agreement.ts`. Every client
   here validates the pack the digest actually commits to before creating, accepting or funding, and
   refuses on the pack's contents rather than on the count. `tests/regression-review.test.ts` proves
-  the refusal by spawning the real supplier process.
+  the refusal by spawning the real provider process.
 
   **The residual limit is real and is not removed by any of that:** this is a property of the
   client, not of the chain. A counterparty running different software is protected by its own
-  software or not at all. An earlier version of this document claimed the supplier program checked
+  software or not at all. An earlier version of this document claimed the provider program checked
   this; at the time it did not, which the independent review demonstrated by spawning it. It does
   now, and the claim is backed by a test that spawns the process rather than by prose.
 
@@ -94,7 +94,7 @@ endogenous-fact boundary: "do these bytes satisfy this committed predicate" is a
   with no token contract in existence — demonstrated by the independent review. Transfers use OpenZeppelin `SafeERC20`, and every movement is
   checked on **both** legs: what left the sender and what arrived at the recipient. Checking only
   the debit was not enough — a second review deployed a token that took the full amount from the
-  escrow and delivered 90% of it, and the job reached PAID with the supplier short-changed. Such
+  escrow and delivered 90% of it, and the job reached PAID with the provider short-changed. Such
   tokens now revert. They are **not supported**, which is a restriction rather than a defence: code
   existence does not make an arbitrary token honest, and supporting a broader set of assets would
   need more than this.
@@ -233,7 +233,7 @@ Three rules constrain the design rather than the other way round:
   have.
 - **The artwork may not imply what the software does not do.** The hero backdrop is deliberately
   not a picture of an AI agent. The status bar two inches above it states that the buyer and
-  supplier are deterministic programs rather than language models; a robot, an android or a neural
+  provider are deterministic programs rather than language models; a robot, an android or a neural
   mesh behind that sentence would re-imply exactly what four review rounds were spent removing, and
   it would be the first thing a reader's eye lands on. What is there instead — two nodes, a link
   between them, a lattice — is derived from the build's own contract-source hash, so it is
@@ -287,7 +287,7 @@ Re-measured after the payout now verifies the recipient's credit as well as the 
 that extra balance read costs about **1,950 gas per settlement** against the previous figures.
 
 Local TypeScript checker: 0.00222 ms/call at 12 records, 0.00658 ms/call at 32 (10,000 calls).
-Supplier transform: 0.00045 ms and 0.00086 ms. **The checker is slower than the sort it checks**,
+Provider transform: 0.00045 ms and 0.00086 ms. **The checker is slower than the sort it checks**,
 which is what you would expect of a fixture chosen to be trivial to perform.
 
 Deployed bytecode: escrow 11,561 bytes, policy 2,859, token 1,649, experiment 8,247.

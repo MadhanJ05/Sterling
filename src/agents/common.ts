@@ -1,5 +1,5 @@
 /**
- * Shared plumbing for the buyer and supplier programs.
+ * Shared plumbing for the buyer and provider programs.
  *
  * These are deterministic programs, not language models. They take no free decisions: given the
  * same job they produce the same bytes every time. The founder controls both of them, and every
@@ -97,7 +97,7 @@ export function parseArgs(argv: string[]): Record<string, string> {
 }
 
 /**
- * The supplier's transformation lives in src/shared/transform.ts so the browser build can use it
+ * The provider's transformation lives in src/shared/transform.ts so the browser build can use it
  * without pulling this module's Node dependencies. Re-exported here for the agent programs.
  */
 export { transform, type FlawKind } from "../shared/transform.ts";

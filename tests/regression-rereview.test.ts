@@ -292,7 +292,7 @@ describe("F4 — the pack's token precision must match the approved asset", () =
   }, 180_000);
   afterAll(async () => { await session?.close(); });
 
-  it("the supplier refuses an agreement that misstates the token's decimals", async () => {
+  it("the provider refuses an agreement that misstates the token's decimals", async () => {
     const source = loadFixture("source-batch-1.json");
     const pack = buildPack({
       title: "Wrong token precision",
@@ -378,7 +378,7 @@ describe("F5 — a token that credits the recipient less than promised must reve
       reverted = true;
       expect(jobs.decodeRevert(escrow as any, e).name).toBe("UnexpectedTokenAmount");
     }
-    expect(reverted, "a 10% outgoing fee reached PAID with the supplier short-changed").toBe(true);
+    expect(reverted, "a 10% outgoing fee reached PAID with the provider short-changed").toBe(true);
 
     // Atomic: nothing recorded, nothing moved, escrow still whole.
     const job = await jobs.readJob(escrow as any, created.jobId);

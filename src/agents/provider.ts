@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Supplier program. A separate process with its own local identity.
+ * Provider program. A separate process with its own local identity.
  *
  * Commands:
  *   accept --runtime <path> --job <id> --pack <file>
@@ -27,7 +27,7 @@ import { check } from "../shared/policy.ts";
 const args = parseArgs(process.argv.slice(2));
 const command = process.argv[2];
 const ctx = connectAgent("PROVIDER_KEY", args.runtime);
-const me = "supplier";
+const me = "provider";
 const jobId = BigInt(args.job!);
 
 function refuse(action: string, reason: string, summary: string): never {
@@ -74,7 +74,7 @@ if (command === "accept") {
   const output = transform(job.source, flaw);
 
   // Preview before submitting. This is the same code the contract runs, it costs nothing, and it
-  // is what makes a one-transaction submit-and-settle safe for an honest supplier.
+  // is what makes a one-transaction submit-and-settle safe for an honest provider.
   const selfCheck = check(job.source, output, job.terms.requiredRowCount);
   say(me, `self-check before submitting: ${selfCheck.result.verdictName}`);
   say(me, selfCheck.headline);
@@ -104,5 +104,5 @@ if (command === "accept") {
     selfCheck: { verdict: selfCheck.result.verdictName, ruleId: selfCheck.result.ruleId, headline: selfCheck.headline },
   });
 } else {
-  throw new Error(`Unknown supplier command: ${command}. Use "accept" or "submit".`);
+  throw new Error(`Unknown provider command: ${command}. Use "accept" or "submit".`);
 }

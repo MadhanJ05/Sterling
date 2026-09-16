@@ -8,7 +8,7 @@ Everything below is a live click-through. Nothing is pre-recorded.
 ## 0 · Frame it (20 seconds)
 
 > "One AI hires another to prepare a data file. Before work starts they approve a checklist of what
-> counts as done. The buyer sets aside payment. The supplier submits. Software checks it, and the
+> counts as done. The buyer sets aside payment. The provider submits. Software checks it, and the
 > payment contract follows the approved rules.
 >
 > Everything you're about to see is a local simulation. Synthetic data, test tokens worth nothing,
@@ -22,22 +22,22 @@ Click **Run a job that satisfies the checklist**. A busy indicator runs; the ste
 it finishes. (It is a log, not a live feed — the interface says so rather than implying progress
 events it does not have.)
 
-> "One click. The buyer proposed an agreement, the supplier re-derived it from the contract and
-> accepted, the buyer funded the escrow, and the supplier delivered. Checking and payment happened
+> "One click. The buyer proposed an agreement, the provider re-derived it from the contract and
+> accepted, the buyer funded the escrow, and the provider delivered. Checking and payment happened
 > in the same transaction — there's no gap where finished work sits waiting for someone to ask for
 > settlement.
 >
-> Twenty-five test dollars moved from buyer to supplier, on the contract's own evaluation."
+> Twenty-five test dollars moved from buyer to provider, on the contract's own evaluation."
 
 Click **Inspect each step**.
 
-> "Step one, the job: a buyer, a supplier, twelve products, twenty-five test dollars.
+> "Step one, the job: a buyer, a provider, twelve products, twenty-five test dollars.
 >
 > Step two is the part that matters. Four clauses in plain language, and next to each one a badge
 > saying which executable rule it maps to. Four of four are checkable. That is the coverage report,
 > and it is the thing we would actually sell."
 
-> "And the supplier didn't take the buyer's word for any of it. Before accepting, it re-derived the
+> "And the provider didn't take the buyer's word for any of it. Before accepting, it re-derived the
 > whole agreement from what the contract actually stored — the amount, the source batch, the token
 > address, the deadlines, every clause — and would have refused on any disagreement. Matching
 > fingerprints aren't enough: a pack can hash exactly as advertised and still describe a different
@@ -96,7 +96,7 @@ escrow**.
 >
 > This isn't a screenshot — it just sent the transaction and recorded what happened."
 
-Click one or two more: **Supplier submits a second, better delivery**, **Settlement is requested
+Click one or two more: **Provider submits a second, better delivery**, **Settlement is requested
 after expiry**.
 
 > "One submission per funded job. And after expiry the contract *cannot pay*, even for conforming
@@ -158,7 +158,7 @@ follows them without either side deciding. A test suite the buyer runs after del
 judging its own case.
 
 **"What stops the buyer writing impossible rules?"**
-Nothing in the software, and it shouldn't. The supplier reads the pack and the coverage report
+Nothing in the software, and it shouldn't. The provider reads the pack and the coverage report
 before accepting, and refuses. What the software guarantees is that the rules cannot change after
 acceptance.
 
@@ -170,7 +170,7 @@ can substitute afterwards. Whether that clears the bar is a fair thing to argue 
 **"Why is checking and paying one transaction?"**
 Because this checker is small, synchronous and bounded at 32 rows, so there is no reason for
 finished work to wait. It grants nothing new: the caller supplies rows, never a verdict. If the
-checker cannot complete, the whole transaction reverts and nothing is recorded — the supplier
+checker cannot complete, the whole transaction reverts and nothing is recorded — the provider
 retries, or the escrow expires back to the buyer. We did not add an override.
 
 **"Is the evaluator an LLM?"**

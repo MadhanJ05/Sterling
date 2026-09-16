@@ -65,9 +65,9 @@ export async function runBlockedAction(session: Session, id: string): Promise<Bl
   switch (id) {
     case "wrong-actor-accept": {
       const jobId = await freshCreated();
-      return attempt(session, id, "Buyer tries to accept on the supplier's behalf",
+      return attempt(session, id, "Buyer tries to accept on the provider's behalf",
         "buyer calls acceptJob()",
-        "Acceptance is the supplier's own authenticated action. The buyer cannot manufacture the supplier's agreement.",
+        "Acceptance is the provider's own authenticated action. The buyer cannot manufacture the provider's agreement.",
         jobId, async () => jobs.acceptJob(escrow, w.buyer, BigInt(jobId), (await session.readJob(jobId)).termsDigest));
     }
     case "wrong-actor-submit": {
@@ -90,7 +90,7 @@ export async function runBlockedAction(session: Session, id: string): Promise<Bl
       const other = await freshCreated();
       const jobId = await freshCreated();
       const otherDigest = (await session.readJob(other)).termsDigest;
-      return attempt(session, id, "Supplier accepts using another job's approved terms",
+      return attempt(session, id, "Provider accepts using another job's approved terms",
         "provider calls acceptJob() with job A's digest against job B",
         "The terms digest binds the chain id, the escrow address and the job id, so an approval for one job means nothing for another.",
         jobId, () => jobs.acceptJob(escrow, w.provider, BigInt(jobId), otherDigest));
@@ -99,7 +99,7 @@ export async function runBlockedAction(session: Session, id: string): Promise<Bl
       const jobId = await freshFunded();
       return attempt(session, id, "Buyer tries to cancel after funding",
         "buyer calls cancelBeforeFunding() on a FUNDED job",
-        "Cancellation exists only for jobs that hold no money. Once funded, the supplier's exposure is real and the buyer cannot walk away unilaterally.",
+        "Cancellation exists only for jobs that hold no money. Once funded, the provider's exposure is real and the buyer cannot walk away unilaterally.",
         jobId, () => (escrow.connect(w.buyer) as any).cancelBeforeFunding(jobId));
     }
     case "double-settle": {
@@ -114,7 +114,7 @@ export async function runBlockedAction(session: Session, id: string): Promise<Bl
     case "double-submit": {
       const jobId = await freshFunded();
       await session.submit(jobId, "order");
-      return attempt(session, id, "Supplier submits a second, better delivery",
+      return attempt(session, id, "Provider submits a second, better delivery",
         "submitDelivery() on an already SUBMITTED job",
         "Version 1 allows one submission per funded job. Revisions after seeing the result are not part of this agreement.",
         jobId, () => jobs.submitDelivery(escrow, w.provider, BigInt(jobId), good()));
@@ -133,7 +133,7 @@ export async function runBlockedAction(session: Session, id: string): Promise<Bl
       await session.submit(jobId);
       return attempt(session, id, "Buyer tries to take the refund early",
         "refundExpired() before settlementExpiry",
-        "The buyer cannot pull the escrow back while the supplier still has a valid claim on it.",
+        "The buyer cannot pull the escrow back while the provider still has a valid claim on it.",
         jobId, () => jobs.refundExpired(escrow, w.buyer, BigInt(jobId)));
     }
     case "deployer-force-verdict": {

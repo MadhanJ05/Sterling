@@ -277,15 +277,15 @@ export class Session {
     return j;
   }
 
-  /** Step 2b: supplier verifies the stored terms itself, then accepts them. */
+  /** Step 2b: provider verifies the stored terms itself, then accepts them. */
   async accept(jobId: string): Promise<SessionJob> {
     const job = this.get(jobId);
     const verified = await jobs.verifyTermsIndependently(this.dep.escrow, BigInt(jobId), BigInt(this.chain.chainId));
-    if (!verified.ok) throw new Error("Supplier's independent recomputation of the terms disagrees with the contract.");
+    if (!verified.ok) throw new Error("Provider's independent recomputation of the terms disagrees with the contract.");
     const tx = await jobs.acceptJob(this.dep.escrow, this.chain.wallets.provider, BigInt(jobId), verified.chainDigest);
     job.transactions.push({ step: "acceptJob", ...tx });
     job.steps.push({
-      step: "accept", who: "supplier",
+      step: "accept", who: "provider",
       detail: "Recomputed the terms digest independently, matched it, and accepted on chain.",
       tx, data: { termsDigest: verified.chainDigest },
     });
@@ -327,7 +327,7 @@ export class Session {
   }
 
   private describeDelivery(output: RecordRow[], verdictName: string, flaw: FlawKind): string {
-    return `Submitted ${output.length} rows. The supplier's own pre-submission check says ${verdictName}.` +
+    return `Submitted ${output.length} rows. The provider's own pre-submission check says ${verdictName}.` +
       (flaw === "none" ? "" : ` A deliberate "${flaw}" defect was requested for this demonstration.`);
   }
 
@@ -349,7 +349,7 @@ export class Session {
     return true;
   }
 
-  /** Step 3: supplier does the work and submits the canonical bundle. */
+  /** Step 3: provider does the work and submits the canonical bundle. */
   async submit(jobId: string, flaw?: FlawKind): Promise<SessionJob> {
     const job = this.get(jobId);
     const { output, flaw: used } = this.deliveryFor(job, flaw);
@@ -357,7 +357,7 @@ export class Session {
     const tx = await jobs.submitDelivery(this.dep.escrow, this.chain.wallets.provider, BigInt(jobId), output);
     job.transactions.push({ step: "submitDelivery", ...tx });
     job.steps.push({
-      step: "submit", who: "supplier",
+      step: "submit", who: "provider",
       detail: this.describeDelivery(output, self.result.verdictName, used),
       tx, data: { deliveryDigest: canonicalDigest(output), selfCheck: self.result.verdictName, flaw: used },
     });
@@ -365,7 +365,7 @@ export class Session {
   }
 
   /**
-   * Step 3+5 in one transaction. The supplier previews its own output first (the UI shows that
+   * Step 3+5 in one transaction. The provider previews its own output first (the UI shows that
    * preview), then records, evaluates and settles atomically. Nothing new is authorised: the
    * caller supplies rows, never a verdict, and the same immutable policy decides.
    */
@@ -377,7 +377,7 @@ export class Session {
     const after = await jobs.readJob(this.dep.escrow, BigInt(jobId));
     job.transactions.push({ step: "submitAndSettle", ...tx });
     job.steps.push({
-      step: "submit", who: "supplier",
+      step: "submit", who: "provider",
       detail: this.describeDelivery(output, self.result.verdictName, used),
       tx, data: { deliveryDigest: canonicalDigest(output), selfCheck: self.result.verdictName, flaw: used },
     });
@@ -476,8 +476,8 @@ export class Session {
 
   /**
    * The whole flow, driven from one button: propose, verify and accept, fund, then submit and
-   * settle in a single transaction. The supplier previews its own output before submitting, which
-   * is what makes the combined transaction safe for an honest supplier.
+   * settle in a single transaction. The provider previews its own output before submitting, which
+   * is what makes the combined transaction safe for an honest provider.
    */
   async runAutomatic(
     scenarioId: string,
@@ -490,13 +490,13 @@ export class Session {
     const job = await this.createJob(scenarioId, opts);
     onStep?.(`Buyer proposed job ${job.jobId} with an approved checklist.`);
     await this.accept(job.jobId);
-    onStep?.("Supplier re-derived the agreement from the contract and accepted it.");
+    onStep?.("Provider agent re-derived the agreement from the contract and accepted it.");
     await this.fund(job.jobId);
     onStep?.("Buyer locked the payment in escrow.");
     if (scenario.submit) {
       await this.submitAndSettle(job.jobId);
       const after = await this.readJob(job.jobId);
-      onStep?.(`Supplier submitted; the contract checked and settled in the same transaction. ${after.status}.`);
+      onStep?.(`Provider submitted; the contract checked and settled in the same transaction. ${after.status}.`);
     } else {
       onStep?.("No delivery in this scenario; advancing local chain time past expiry.");
       await this.advanceTime(job.pack.payment.deliveryWindowSeconds + job.pack.payment.settlementWindowSeconds + 5);
@@ -515,19 +515,19 @@ export class Session {
     const status = (await this.readJob(jobId)).status;
     if (status !== "CREATED") throw new Error(`Job ${jobId} is ${status}; the automatic path starts from CREATED.`);
     await this.accept(jobId);
-    onStep?.("Supplier re-derived the agreement from the contract and accepted it.");
+    onStep?.("Provider agent re-derived the agreement from the contract and accepted it.");
     await this.fund(jobId);
     onStep?.("Buyer locked the payment in escrow.");
     await this.submitAndSettle(jobId);
     const after = await this.readJob(jobId);
-    onStep?.(`Supplier delivered; the contract checked and settled in the same transaction. ${after.status}.`);
+    onStep?.(`Provider delivered; the contract checked and settled in the same transaction. ${after.status}.`);
     return this.get(job.jobId);
   }
 
   // ---------------------------------------------------- running the agent pair
 
   /**
-   * Runs the buyer and supplier as real separate OS processes with separate keys.
+   * Runs the buyer and provider as real separate OS processes with separate keys.
    * Both are controlled by this orchestrator, which is stated everywhere their output appears.
    *
    * `onLine` is called as each child writes a line, but the HTTP caller only sees the accumulated
@@ -600,7 +600,7 @@ export class Session {
     const accepted = await run(
       "src/agents/provider.ts", ["accept", "--runtime", this.runtimePath, "--job", jobId, "--pack", packPath], "provider",
     );
-    steps.push({ step: "accept", who: "supplier", detail: "Verified the stored terms independently, then accepted.", tx: accepted.parsed.tx });
+    steps.push({ step: "accept", who: "provider", detail: "Verified the stored terms independently, then accepted.", tx: accepted.parsed.tx });
     transactions.push({ step: "acceptJob", ...accepted.parsed.tx });
 
     const funded = await run(
@@ -624,12 +624,12 @@ export class Session {
     if (scenario.submit) {
       const flaw = flawByScenario[scenarioId] ?? "none";
       const submitArgs = ["submit", "--runtime", this.runtimePath, "--job", jobId, "--flaw", flaw];
-      // A supplier refuses to submit work that fails its own preview. The demonstration scenarios
+      // A provider refuses to submit work that fails its own preview. The demonstration scenarios
       // are the only place that override is used, and it is passed explicitly.
       if (flaw !== "none") submitArgs.push("--demonstrate-nonconforming", "true");
       const submitted = await run("src/agents/provider.ts", submitArgs, "provider");
       steps.push({
-        step: "submit", who: "supplier",
+        step: "submit", who: "provider",
         detail: `Submitted ${submitted.parsed.rowCount} rows; its own pre-submission check said ${submitted.parsed.selfCheck.verdict}.`,
         tx: submitted.parsed.tx,
       });

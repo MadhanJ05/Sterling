@@ -3,7 +3,7 @@ export interface Row { productId: string; priceCents: string }
 /**
  * One interface, two backends.
  *
- *   server  — the local Node process, which also runs the buyer and supplier as separate
+ *   server  — the local Node process, which also runs the buyer and provider as separate
  *             operating-system processes and can attempt unauthorized actions against the chain.
  *   static  — the GitHub Pages build, where the same contracts run in an EVM inside this tab.
  *

@@ -12,13 +12,13 @@ genuinely cannot perform them — see [What the published page cannot do](#what-
 
 Agents are starting to buy work from one another — a job goes out, a result comes back, and
 payment settles with no human reading either one. So who decides the work was acceptable? Not the
-buyer, who would rather not pay. Not the supplier, who would rather be paid. Neither can judge its
+buyer, who would rather not pay. Not the provider, who would rather be paid. Neither can judge its
 own case, and nobody is going to review ten thousand small jobs by hand.
 
 So they settle it first. Both sides approve an **acceptance pack**: a plain-language checklist, a
 coverage report saying which clauses software can actually check, and the payment and expiry
 policy. The payment goes into escrow, the work is delivered, and a contract runs exactly those
-rules against exactly the bytes it stored — then pays the supplier or refunds the buyer.
+rules against exactly the bytes it stored — then pays the provider or refunds the buyer.
 
 Nobody can overrule that answer, including whoever deployed the contract. That is a testable
 property of this code, not a slogan: see `tests/no-bypass.test.ts`.
@@ -79,12 +79,12 @@ Seven scenarios, each creating its own separate job — one job never reaches tw
 
 | Scenario | What happens |
 |---|---|
-| Conforming delivery | All four rules hold. The supplier is paid. |
+| Conforming delivery | All four rules hold. The provider is paid. |
 | Right data, wrong sort | Every row correct, two products out of order. Buyer refunded on rule 4. |
 | A price was altered | One price differs from the approved source. Buyer refunded on rule 3. |
 | A row is missing | Eleven rows against an agreed twelve. Buyer refunded on rule 1. |
 | An invented product | A product never in the source appears. Buyer refunded on rule 2. |
-| Nothing delivered | Supplier never submits. After expiry the buyer recovers the escrow. |
+| Nothing delivered | Provider never submits. After expiry the buyer recovers the escrow. |
 | A clause software cannot check | The pack says "make the descriptions persuasive". The job **cannot be created** until scope is revised explicitly. |
 
 Then ten unauthorized actions are really attempted against the running chain, and what the contract
@@ -96,19 +96,19 @@ to judge freely is least consistent on.
 
 ## Settling in one transaction
 
-By default the supplier previews its own output, then **submits and settles in a single
+By default the provider previews its own output, then **submits and settles in a single
 transaction**: the contract records the delivery, evaluates it and pays or refunds atomically. This
 removes the gap in which valid work sits waiting for someone to request settlement.
 
 It grants no new authority. The caller must be the provider, supplies rows and never a verdict, and
 the same immutable policy decides. If the policy cannot complete, the whole transaction reverts and
-nothing is recorded, so the supplier may retry — with `submitAndSettle` or with the two-step
+nothing is recorded, so the provider may retry — with `submitAndSettle` or with the two-step
 `submitDelivery` then `settle` — up to the delivery deadline. If it never succeeds, the agreed
 expiry refund applies. There is no admin override here or anywhere.
 
 The two-step path remains, is still tested, and is what the expiry scenarios use.
 
-A supplier refuses to submit a delivery that fails its own preview. The demonstration scenarios
+A provider refuses to submit a delivery that fails its own preview. The demonstration scenarios
 that show a genuine FAIL pass `--demonstrate-nonconforming` explicitly; nothing does it by accident.
 
 ## The four rules
@@ -137,8 +137,8 @@ can see exactly what the payment no longer depends on.
 | Import boundary | `src/shared/importJson.ts` | Strict JSON validation. Nothing is coerced, rounded or dropped silently. |
 | Local checker | `src/shared/policy.ts` | Readable rule-level findings. **No settlement authority.** |
 | Acceptance pack | `src/shared/pack.ts` | Clauses, coverage report, scope revision, template reuse. |
-| Buyer program | `src/agents/buyer.ts` | Separate process, own identity. Creates and funds. |
-| Supplier program | `src/agents/provider.ts` | Separate process, own identity. Verifies terms itself, transforms, submits. |
+| Buyer agent | `src/agents/buyer.ts` | Separate process, own identity. Creates and funds. |
+| Provider agent | `src/agents/provider.ts` | Separate process, own identity. Verifies terms itself, transforms, submits. |
 | Session | `src/chain/session.ts` | The named actions the CLI and the web server both drive. |
 | Server | `src/server/index.ts` | Loopback only. Named demo actions only. |
 | Web app | `src/web/` | The five-step interface. |
@@ -257,7 +257,7 @@ transfers, evidence — so the rules being enforced are the same rules the tests
 
 Two things are **absent rather than simulated**, and the interface says so:
 
-- **The buyer and supplier as separate operating-system processes.** A tab cannot spawn processes.
+- **The buyer and provider as separate operating-system processes.** A tab cannot spawn processes.
   Showing the same code in-page under that label would claim something untrue, so the panel is not
   there.
 - **The ten unauthorized actions.** Worth watching against a chain you started yourself.

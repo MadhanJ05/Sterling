@@ -193,16 +193,16 @@ async function run() {
 
     // ---- conforming delivery, in one click
     await clickText("Run a job that satisfies the checklist");
-    await waitText("the contract paid the supplier");
+    await waitText("the contract paid the provider");
     const auto = await text();
-    check("one click runs the whole job to payment", has(auto, "the contract paid the supplier"));
+    check("one click runs the whole job to payment", has(auto, "the contract paid the provider"));
     // The step list is a log returned when the run completes, not a live stream. The interface
     // says so, and this check is named accordingly.
     check("the completed run lists every step it took",
-      has(auto, "Buyer proposed job") && has(auto, "Supplier re-derived the agreement") && has(auto, "same transaction"));
+      has(auto, "Buyer proposed job") && has(auto, "Provider agent re-derived the agreement") && has(auto, "same transaction"));
     check("the interface does not claim the step list is live", has(auto, "it is a log, not a live feed"));
     check("party labels are human-readable, with addresses on expansion",
-      has(auto, "Buyer") && has(auto, "Supplier") && !/0x[0-9a-fA-F]{40}/.test(auto));
+      has(auto, "Buyer agent") && has(auto, "Provider agent") && !/0x[0-9a-fA-F]{40}/.test(auto));
     await shot("02-automatic");
 
     await clickText("Inspect each step");
@@ -227,7 +227,7 @@ async function run() {
     check("the inspector shows every rule as satisfied", has(checksText, "All four rules are satisfied"));
     check("the settled record says the contract decided, not the page",
       has(checksText, "the money moved on the contract's own evaluation"));
-    check("payment step reports the real outcome", has(checksText, "Released to the supplier"));
+    check("payment step reports the real outcome", has(checksText, "Released to the provider agent"));
     check("balance change is shown", /\+25 mUSD/.test(checksText));
     await shot("03-checks-pass");
     await shot("04-paid");
@@ -237,9 +237,9 @@ async function run() {
     await cdp.send("Page.reload");
     await waitText("Agree on what counts as done");
     await clickText("#1");
-    await waitText("the contract paid the supplier");
+    await waitText("the contract paid the provider");
     const afterReload = await text();
-    check("a page refresh redraws the real terminal state", has(afterReload, "the contract paid the supplier"));
+    check("a page refresh redraws the real terminal state", has(afterReload, "the contract paid the provider"));
     const balancesAfter = await (await fetch(`${BASE}/api/state`)).json();
     check("a refresh repeats no financial action",
       JSON.stringify(balancesBefore.balances) === JSON.stringify(balancesAfter.balances));
@@ -271,10 +271,10 @@ async function run() {
       return true;
     })()`);
     await clickText("Import and run it automatically");
-    await waitText("the contract paid the supplier");
+    await waitText("the contract paid the provider");
     const imported = await text();
     check("an imported batch runs through to payment",
-      has(imported, "Imported batch") && has(imported, "the contract paid the supplier"));
+      has(imported, "Imported batch") && has(imported, "the contract paid the provider"));
     await shot("10-imported-batch");
 
     await clickText("Export and verify an evidence bundle");
@@ -363,11 +363,11 @@ async function run() {
 
     // ---- run the agent pair from the UI
     await clickText("fail-order", "details.bay-panel");
-    await waitText("[supplier]");
+    await waitText("[provider]");
     const agents = await text();
     // Also a log returned on completion, not a live stream. Named accordingly.
     check("the two agent programs run and report their own output",
-      has(agents, "[buyer]") && has(agents, "[supplier]") && has(agents, "validated against the stored terms"));
+      has(agents, "[buyer]") && has(agents, "[provider]") && has(agents, "validated against the stored terms"));
     await shot("09-agents");
 
     // ---- contrast

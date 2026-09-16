@@ -119,7 +119,7 @@ describe("escrow: agreement, delivery, settlement", () => {
     expect(report.ok).toBe(false);
     expect(report.issues.map((i) => i.code)).toContain("PACK_NOT_FULLY_AUTOMATIC");
 
-    // The real supplier process refusing this job is proven end to end in
+    // The real provider process refusing this job is proven end to end in
     // tests/regression-review.test.ts, which spawns it rather than calling the validator directly.
   });
 

@@ -9,14 +9,14 @@ Evidence that the tests failed first: the five findings produced 18 failures out
 run against the unrepaired code. The two that passed were the intended controls — a well-formed
 agreement is still accepted, and the chain still works on loopback.
 
-## P1 — the supplier verified fingerprints, not the agreement's meaning
+## P1 — the provider verified fingerprints, not the agreement's meaning
 
-**Reproduced.** The real supplier process accepted a pack with an unsupported subjective clause
+**Reproduced.** The real provider process accepted a pack with an unsupported subjective clause
 (buyer claimed a count of zero), a pack advertising 25 test dollars against an on-chain amount of
 1, and a pack naming a different source batch from the one stored.
 
 **Repaired.** `src/shared/agreement.ts` is one strict validator, used before creation, before
-supplier acceptance, before funding, and inside evidence verification. It requires the pack —
+provider acceptance, before funding, and inside evidence verification. It requires the pack —
 `--pack` is now mandatory for `provider accept` — and rejects unknown formats, unsupported
 policies, invented rule IDs, invalid coverage labels, and inconsistent fields. It compares source
 digest, row count, rule mask, policy and version, amount, payment-token address, parties, chain,
@@ -44,10 +44,10 @@ text is the template's text.
 
 **Also corrected.** The review noted that the test titled "lying about the clause count does not
 help: the digest then no longer matches the pack" asserted the opposite of its title and never
-invoked the supplier. The title was wrong: the digest *does* match, which is the whole point. That
+invoked the provider. The title was wrong: the digest *does* match, which is the whole point. That
 test is now "an on-chain unsupported-clause count of zero is a bare claim the contract cannot
 check", asserts what actually happens, and the end-to-end refusal is proven separately by spawning
-the real supplier process.
+the real provider process.
 
 ## P1 — an address with no token contract produced a false PAID
 
@@ -120,7 +120,7 @@ stopped; and an agent refuses to run without `--runtime`.
 fixed before implementation: an evaluation that cannot complete reverts the whole transaction and
 records nothing, so the provider may retry either path up to the delivery deadline, after which the
 agreed expiry refund applies. No admin override was added. Existing jobs keep their policy and
-version; changed semantics would need a new deployment. The supplier previews its output before
+version; changed semantics would need a new deployment. The provider previews its output before
 submitting and refuses work that fails its own check unless `--demonstrate-nonconforming` is passed
 explicitly, which only the demonstration scenarios do.
 
@@ -136,7 +136,7 @@ tests exactly that attack, including a hostile third party trying to swap in a f
 **Automation as the primary experience.** The home screen now leads with **Run an automatic job**,
 which runs the whole flow and fills a timeline as it goes, with **Inspect each step** as a separate
 action. Fixtures, the agent processes and the attack scenarios moved into a collapsed *Advanced
-demonstration* panel. Parties are labelled "Buyer" and "Supplier" with addresses on expansion.
+demonstration* panel. Parties are labelled "Buyer" and "Provider" with addresses on expansion.
 Explanatory-text contrast was raised. A batch-import box accepts a few rows and rebinds the fixed
 template to them, demonstrating reuse rather than another hard-coded example — and the interface
 says plainly that only one template is supported.
@@ -225,21 +225,21 @@ pack is rejected; and an ordinary conforming job still runs with no extra approv
 
 ## F4 — the pack's token precision could contradict the asset
 
-**Reproduced.** The real supplier CLI accepted an agreement declaring 0 decimals for a token that
+**Reproduced.** The real provider CLI accepted an agreement declaring 0 decimals for a token that
 reports 6. Base units matched, so the transfer was unaffected, but the agreement described
 25,000,000 mUSD where the contract meant 25.
 
 **Repaired.** The validator takes `approvedTokenDecimals`, read from the token itself. The buyer and
-supplier both read `decimals()` from the approved asset and refuse a pack that disagrees
+provider both read `decimals()` from the approved asset and refuse a pack that disagrees
 (`PAYMENT_DECIMALS_MISMATCH`). The RPC evidence verifier checks the same thing.
 
 **What remains limited.** This works because the MVP supports one known asset per escrow. A general
 token-metadata story is out of scope and was not built.
 
-## F5 — an outgoing fee produced PAID with the supplier short-changed
+## F5 — an outgoing fee produced PAID with the provider short-changed
 
 **Reproduced.** A token that credits the escrow in full on `transferFrom` but skims 10% on
-`transfer` let a job promising 25,000,000 base units reach PAID while the supplier received
+`transfer` let a job promising 25,000,000 base units reach PAID while the provider received
 22,500,000. `_push` checked how much left the escrow, not how much arrived.
 
 **Repaired.** `_push` now checks both legs: the escrow must be debited by exactly the amount **and**
@@ -283,7 +283,7 @@ benchmark is unaffected and was not re-run. Regression tests are in `tests/regre
 ## R1 — a later job changed an earlier job's reported payment
 
 **Reproduced.** Job A pays 25 test dollars. Job B later pays another 25. Re-exporting A's evidence
-reported the supplier as having earned **50 on A**, and A's genuine evidence then failed both the
+reported the provider as having earned **50 on A**, and A's genuine evidence then failed both the
 offline consistency check and the RPC check. Two jobs funded before either settled were worse: each
 included the other's deposit, so no end-of-job snapshot would have fixed it either.
 
@@ -402,7 +402,7 @@ than emitting one that later fails verification.
 **Regression tests.** The review's empty-list and half-amount cases; a summary naming a recipient
 the movements do not show; a supplied direction contradicting its addresses; duplicated movement
 identifiers; an inflated `fundedIn`; an understated `paidOut`; a terminal paid job with no payout
-movement; one with no funding movement; a refunded job whose movements show the supplier being
+movement; one with no funding movement; a refunded job whose movements show the provider being
 paid; and a check that the exporter's own summaries equal what its movements derive to. Genuine
 paid, rejected and expired bundles are controls, asserted to pass the offline library, the offline
 CLI **and** the RPC path. Every mutation is asserted to fail all three, so closing the offline gap

@@ -10,7 +10,7 @@ export interface Scenario {
   sourceFixture: string;
   /**
    * The committed fixture this scenario's delivery must equal. It is an assertion target, not the
-   * delivery path: the supplier always transforms the job's own source, so an imported batch works
+   * delivery path: the provider always transforms the job's own source, so an imported batch works
    * exactly like a built-in one. tests/checker-fixtures.test.ts pins the equivalence.
    */
   outputFixture: string | null;
@@ -27,7 +27,7 @@ export const SCENARIOS: readonly Scenario[] = [
   {
     id: "pass",
     label: "Conforming delivery",
-    short: "Supplier returns exactly what was agreed. Payment is released.",
+    short: "Provider returns exactly what was agreed. Payment is released.",
     sourceFixture: "source-batch-1.json",
     outputFixture: "output-correct.json",
     flaw: "none",
@@ -35,7 +35,7 @@ export const SCENARIOS: readonly Scenario[] = [
     submit: true,
     expectedTerminalStatus: "PAID",
     expectedRuleId: 0,
-    explanation: "All four agreed rules hold, so the contract pays the supplier.",
+    explanation: "All four agreed rules hold, so the contract pays the provider.",
   },
   {
     id: "fail-order",
@@ -93,7 +93,7 @@ export const SCENARIOS: readonly Scenario[] = [
   {
     id: "expiry",
     label: "Nothing delivered",
-    short: "Supplier never submits. After expiry the buyer recovers the escrow.",
+    short: "Provider never submits. After expiry the buyer recovers the escrow.",
     sourceFixture: "source-batch-1.json",
     outputFixture: null,
     flaw: "none",
@@ -125,13 +125,13 @@ export function scenarioById(id: string): Scenario | undefined {
 }
 
 export const BLOCKED_ACTIONS = [
-  { id: "wrong-actor-accept", label: "Buyer tries to accept on the supplier's behalf" },
+  { id: "wrong-actor-accept", label: "Buyer tries to accept on the provider's behalf" },
   { id: "wrong-actor-submit", label: "An unrelated account tries to submit the delivery" },
   { id: "wrong-actor-fund", label: "An unrelated account tries to fund the job" },
-  { id: "stale-terms-digest", label: "Supplier accepts using another job's approved terms" },
+  { id: "stale-terms-digest", label: "Provider accepts using another job's approved terms" },
   { id: "cancel-funded", label: "Buyer tries to cancel after funding" },
   { id: "double-settle", label: "Settlement is requested a second time" },
-  { id: "double-submit", label: "Supplier submits a second, better delivery" },
+  { id: "double-submit", label: "Provider submits a second, better delivery" },
   { id: "settle-after-expiry", label: "Settlement is requested after expiry" },
   { id: "refund-before-expiry", label: "Buyer tries to take the refund early" },
   { id: "deployer-force-verdict", label: "The deployer tries to force a verdict or move the escrow" },

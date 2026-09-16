@@ -6,7 +6,7 @@
  * output the test suite and the CLI demonstration use, transactions are real transactions, and the
  * escrow enforces the same rules. What changes is where it executes.
  *
- * One honest consequence: the buyer and supplier cannot be separate operating-system processes in
+ * One honest consequence: the buyer and provider cannot be separate operating-system processes in
  * a browser tab. The static build therefore does not offer that demonstration rather than showing
  * the same code in-page under a label that would imply otherwise.
  */

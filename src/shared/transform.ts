@@ -1,5 +1,5 @@
 /**
- * The supplier's actual transformation: sort by product ID ascending, prices unchanged.
+ * The provider's actual transformation: sort by product ID ascending, prices unchanged.
  *
  * The flaw modes are deliberate defects used to demonstrate a genuine FAIL. They are documented,
  * deterministic, and chosen to reproduce the committed output fixtures exactly for batch 1, so the
@@ -13,7 +13,7 @@ import type { FlawKind } from "./scenarios.ts";
 export type { FlawKind };
 
 /**
- * The supplier's actual transformation: sort by product ID ascending, prices unchanged.
+ * The provider's actual transformation: sort by product ID ascending, prices unchanged.
  *
  * The flaw modes are deliberate defects used to demonstrate a genuine FAIL. They are documented,
  * deterministic, and chosen to reproduce the committed output fixtures exactly for batch 1, so

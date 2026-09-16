@@ -3,7 +3,7 @@
  *
  * Every test here reproduces a behaviour the review demonstrated, and asserts the corrected
  * behaviour. Each one failed before the corresponding repair. They are deliberately written
- * against the same surfaces the review used — the real supplier process, the real escrow, the
+ * against the same surfaces the review used — the real provider process, the real escrow, the
  * real verifier CLI — rather than against internal helpers, because the review's point was that
  * the internals agreed with themselves while the boundary did not.
  */
@@ -39,7 +39,7 @@ function runCli(script: string, args: string[], env: Record<string, string> = {}
   });
 }
 
-describe("P1 — the supplier must validate the agreement's meaning, not only its fingerprints", () => {
+describe("P1 — the provider must validate the agreement's meaning, not only its fingerprints", () => {
   let h: Harness;
   let dir: string;
   let runtimePath: string;
@@ -55,8 +55,8 @@ describe("P1 — the supplier must validate the agreement's meaning, not only it
   });
   afterAll(async () => { await h?.close(); });
 
-  /** Runs the real supplier program exactly as the orchestrator does. */
-  async function supplierAccepts(job: { jobId: bigint; pack: unknown }, label: string) {
+  /** Runs the real provider program exactly as the orchestrator does. */
+  async function providerAccepts(job: { jobId: bigint; pack: unknown }, label: string) {
     const packPath = join(dir, `${label}.json`);
     writeFileSync(packPath, JSON.stringify(job.pack));
     const r = await runCli(
@@ -77,7 +77,7 @@ describe("P1 — the supplier must validate the agreement's meaning, not only it
     // The buyer lies to the contract about the count, so creation succeeds.
     const job = await makeJob(h, { pack, unsupportedClauseCountOverrideForNegativeTests: 0 });
 
-    const r = await supplierAccepts(job, "unsupported-pack");
+    const r = await providerAccepts(job, "unsupported-pack");
     expect(r.status).toBe("CREATED");
     expect(r.code).not.toBe(0);
     expect(r.stderr + r.stdout).toMatch(/PACK_NOT_FULLY_AUTOMATIC|UNSUPPORTED/i);
@@ -88,7 +88,7 @@ describe("P1 — the supplier must validate the agreement's meaning, not only it
     const pack = buildPack({ title: "Advertises 25", source, payment: payment() });
     const job = await makeJob(h, { pack, amount: 1_000_000n });
 
-    const r = await supplierAccepts(job, "amount-mismatch");
+    const r = await providerAccepts(job, "amount-mismatch");
     expect(r.status).toBe("CREATED");
     expect(r.code).not.toBe(0);
     expect(r.stderr + r.stdout).toMatch(/AMOUNT/i);
@@ -100,7 +100,7 @@ describe("P1 — the supplier must validate the agreement's meaning, not only it
     const pack = buildPack({ title: "Names another batch", source: otherSource, payment: payment() });
     const job = await makeJob(h, { pack, source });
 
-    const r = await supplierAccepts(job, "source-mismatch");
+    const r = await providerAccepts(job, "source-mismatch");
     expect(r.status).toBe("CREATED");
     expect(r.code).not.toBe(0);
     expect(r.stderr + r.stdout).toMatch(/SOURCE_DIGEST/i);
@@ -111,11 +111,11 @@ describe("P1 — the supplier must validate the agreement's meaning, not only it
     const pack = buildPack({ title: "Invented clause", source, payment: payment() });
     pack.clauses[3] = {
       ...pack.clauses[3]!,
-      text: "Rows are sorted in whatever order the supplier judges most useful.",
+      text: "Rows are sorted in whatever order the provider judges most useful.",
     };
     const job = await makeJob(h, { pack });
 
-    const r = await supplierAccepts(job, "invented-clause");
+    const r = await providerAccepts(job, "invented-clause");
     expect(r.status).toBe("CREATED");
     expect(r.code).not.toBe(0);
     expect(r.stderr + r.stdout).toMatch(/CLAUSE_TEXT|TEMPLATE/i);
@@ -126,7 +126,7 @@ describe("P1 — the supplier must validate the agreement's meaning, not only it
     const pack = buildPack({ title: "Good", source, payment: payment() });
     const job = await makeJob(h, { pack });
 
-    const r = await supplierAccepts(job, "good");
+    const r = await providerAccepts(job, "good");
     expect(r.code, r.stderr).toBe(0);
     expect(r.status).toBe("ACCEPTED");
   });
@@ -219,7 +219,7 @@ describe("P1 — evidence must verify the payment it claims", () => {
     const section = r.sections.find((x) => x.key === "internallyConsistent")!;
     expect(section.verdict).toBe("FAIL");
     const failed = section.lines.filter((l) => !l.ok).map((l) => l.name);
-    expect(failed).toContain("displayed supplier matches the terms");
+    expect(failed).toContain("displayed provider matches the terms");
     expect(failed).toContain("displayed amount matches the terms");
     expect(failed).toContain("displayed status matches the recorded verdict");
   });

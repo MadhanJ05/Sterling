@@ -8,7 +8,7 @@ import { AgentField } from "./AgentField.tsx";
 import { API_VERSION } from "../shared/apiVersion.ts";
 
 const ROLE: Record<string, string> = {
-  buyer: "Buyer", provider: "Supplier", thirdParty: "Unrelated account",
+  buyer: "Buyer agent", provider: "Provider agent", thirdParty: "Unrelated account",
   deployer: "Deployer", escrow: "Escrow",
 };
 
@@ -124,7 +124,7 @@ export function App() {
   };
 
   const runAgents = async (scenarioId: string) => {
-    setAgentLog(["starting the buyer and supplier programs as separate processes…"]);
+    setAgentLog(["starting the buyer and provider programs as separate processes…"]);
     setAutoLog([]); clearPanels();
     const res = await run(`agents:${scenarioId}`, () => api.runAgents(scenarioId));
     setAgentLog(res.log);
@@ -166,7 +166,7 @@ export function App() {
             <span className="bar" aria-hidden="true" />
             <span>one operator controls every participant</span>
             <span className="bar" aria-hidden="true" />
-            <span>buyer and supplier are deterministic programs, not language models</span>
+            <span>buyer and provider agents are deterministic programs, not language models</span>
             <span className="bar" aria-hidden="true" />
             <span>{STATIC_BUILD ? "chain runs in this tab" : "chain runs on your machine"}</span>
           </div>
@@ -200,7 +200,7 @@ export function App() {
         <p className="lede">
           Agents are starting to buy work from one another — a job goes out, a result comes back,
           and payment settles with no human reading either one. So who decides the work was
-          acceptable? Not the buyer, who would rather not pay. Not the supplier, who would rather be
+          acceptable? Not the buyer, who would rather not pay. Not the provider, who would rather be
           paid. Neither can judge its own case.
         </p>
         <p className="lede second">
@@ -242,9 +242,9 @@ export function App() {
               </div>
               <div className="pad stack">
                 <p className="body-2">
-                  One click runs the whole thing: the buyer proposes an agreement, the supplier
-                  re-derives it from the contract and accepts, the buyer funds the escrow, and the
-                  supplier delivers. Checking and payment happen in the same transaction. The step
+                  One click runs the whole thing: the buyer agent proposes an agreement, the provider
+                  agent re-derives it from the contract and accepts, the buyer funds the escrow, and
+                  the provider delivers. Checking and payment happen in the same transaction. The step
                   list appears when the run finishes — it is a log, not a live feed.
                 </p>
                 {running
@@ -329,7 +329,7 @@ export function App() {
               <div className="pad-s stack">
                 <div className="readouts pair">
                   <Readout k="Buyer" v={formatUnits(state?.balances?.buyer ?? "0", decimals)} />
-                  <Readout k="Supplier" v={formatUnits(state?.balances?.provider ?? "0", decimals)} />
+                  <Readout k="Provider" v={formatUnits(state?.balances?.provider ?? "0", decimals)} />
                   <Readout k="Escrow" v={formatUnits(state?.balances?.escrow ?? "0", decimals)} />
                 </div>
                 <p className="note">
@@ -469,7 +469,7 @@ export function App() {
                 {!STATIC_BUILD && <div className="col-4 stack-s">
                   <span className="tag">Run the two demo programs</span>
                   <p className="note">
-                    Starts the buyer and supplier as real separate operating-system processes with
+                    Starts the buyer and provider as real separate operating-system processes with
                     separate keys, talking only through the chain. Both are started by this server,
                     and both are controlled by the same operator.
                   </p>
@@ -520,7 +520,7 @@ export function App() {
                     <span className="tag">Only in the local build</span>
                     <p className="note">
                       Two demonstrations are missing here, and are missing rather than simulated.
-                      Running the buyer and supplier as <b>separate operating-system processes with
+                      Running the buyer and provider as <b>separate operating-system processes with
                       separate keys</b> is something a browser tab cannot do, and showing the same
                       code in-page under that label would claim something untrue. The same goes for
                       the ten <b>unauthorized actions</b>, which are worth watching against a chain
@@ -552,7 +552,7 @@ function Overview({ job, status, decimals, symbol }: any) {
   const tone: Tone = status === "PAID" ? "go" : status === "REJECTED" ? "no" : status === "EXPIRED" ? "hold" : "idle";
   const sigil = status === "PAID" ? "✓" : status === "REJECTED" ? "✕" : status === "EXPIRED" ? "◷" : "◌";
   const line =
-    status === "PAID" ? "The delivery met every agreed rule, so the contract paid the supplier."
+    status === "PAID" ? "The delivery met every agreed rule, so the contract paid the provider."
     : status === "REJECTED" ? "The delivery did not meet the agreed rules, so the contract refunded the buyer."
     : status === "EXPIRED" ? "Nothing was settled before the deadline, so the escrow returned to the buyer."
     : "This job is still in progress.";
@@ -571,8 +571,8 @@ function Overview({ job, status, decimals, symbol }: any) {
       </div>
 
       <Facts items={[
-        ["Buyer", <Party role="Buyer" address={t?.buyer} />],
-        ["Supplier", <Party role="Supplier" address={t?.provider} />],
+        ["Buyer", <Party role="Buyer agent" address={t?.buyer} />],
+        ["Provider", <Party role="Provider agent" address={t?.provider} />],
         ["Agreement", `${job.coverage?.executable} of ${job.pack?.clauses?.length} clauses executable, pack v${job.pack?.packVersion}`],
         ["Payment", `${formatUnits(t?.amount ?? "0", decimals)} ${symbol} (test tokens, no value)`],
       ]} />
@@ -662,8 +662,8 @@ function PhaseJob({ job, decimals, symbol }: any) {
   return (
     <Phase n={1} title="The job" done why="Who is involved, what is being asked for, and what is being offered for it.">
       <Facts items={[
-        ["Buyer", <Party role="Buyer (operator-controlled)" address={t?.buyer} />],
-        ["Supplier", <Party role="Supplier (operator-controlled)" address={t?.provider} />],
+        ["Buyer", <Party role="Buyer agent (operator-controlled)" address={t?.buyer} />],
+        ["Provider", <Party role="Provider agent (operator-controlled)" address={t?.provider} />],
         ["Task", "Normalise a product catalogue: return every product once, keep its price, sort by product ID."],
         ["Offered", `${formatUnits(t?.amount ?? "0", decimals)} ${symbol} (test tokens, no value)`],
       ]} />
@@ -712,17 +712,17 @@ function PhaseAgreement({ job, act, busy, status }: any) {
         </div>
       )}
 
-      <p className="note">Buyer approved these terms by creating the job. Supplier approval is a separate action:</p>
+      <p className="note">The buyer approved these terms by creating the job. Provider approval is a separate action:</p>
       <div className="row">
         <button onClick={() => act("accept")} disabled={!!busy || status !== "CREATED"}>
-          {accepted ? "✓ Supplier accepted" : "Supplier: verify and accept these exact terms"}
+          {accepted ? "✓ Provider accepted" : "Provider: verify and accept these exact terms"}
         </button>
         <button onClick={() => act("fund")} disabled={!!busy || status !== "ACCEPTED"}>
           {funded ? "✓ Buyer funded the escrow" : "Buyer: lock the payment in escrow"}
         </button>
       </div>
       <p className="note">
-        Before accepting, the supplier re-derives the whole agreement from what the contract actually
+        Before accepting, the provider re-derives the whole agreement from what the contract actually
         stored — amount, source batch, token address, deadlines, every clause — and refuses on any
         disagreement.
       </p>
@@ -748,10 +748,10 @@ function PhaseDelivery({ job, act, busy, status }: any) {
   return (
     <Phase n={3} title="The delivery" done={submitted} live={canSubmit}
       waiting={!["FUNDED", "SUBMITTED", "PAID", "REJECTED", "EXPIRED"].includes(status)}
-      why="What the supplier actually submitted, and the fingerprint the contract computed from it.">
+      why="What the provider actually submitted, and the fingerprint the contract computed from it.">
       {canSubmit && (
         <div className="row">
-          <button className="beam" onClick={() => act("submit")} disabled={!!busy}>Supplier: submit the result</button>
+          <button className="beam" onClick={() => act("submit")} disabled={!!busy}>Provider: submit the result</button>
         </div>
       )}
       {!submitted && !canSubmit && <p className="note">Nothing submitted yet.</p>}
@@ -828,7 +828,7 @@ function PhasePayment({ job, status, act, busy, decimals, symbol }: any) {
       why="What actually happened to the money, read back from the chain.">
       <div className="between">
         <span className="body-2" style={{ color: "var(--ink)" }}>
-          {status === "PAID" && "Released to the supplier."}
+          {status === "PAID" && "Released to the provider agent."}
           {status === "REJECTED" && "Refunded to the buyer: the delivery did not meet the agreed rules."}
           {status === "EXPIRED" && "Refunded to the buyer on timeout."}
           {status === "SUBMITTED" && "Held in escrow, awaiting a settlement request."}

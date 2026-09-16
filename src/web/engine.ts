@@ -6,7 +6,7 @@
  * the same compiled contracts, and the figures come from the same shared modules the test suite
  * checks: encoding, policy, pack, agreement, transfers, evidence.
  *
- * What the static build does NOT offer, and says so in the interface: the buyer and supplier as
+ * What the static build does NOT offer, and says so in the interface: the buyer and provider as
  * separate operating-system processes. A tab cannot spawn processes, and showing the same code
  * in-page under that label would claim something untrue.
  */
@@ -247,10 +247,10 @@ export class Engine {
   async accept(jobId: string): Promise<EngineJob> {
     const job = this.get(jobId);
     const verified = await jobs.verifyTermsIndependently(this.dep.escrow, BigInt(jobId), BigInt(this.chain.chainId));
-    if (!verified.ok) throw new Error("The supplier's independent recomputation of the terms disagrees with the contract.");
+    if (!verified.ok) throw new Error("The provider's independent recomputation of the terms disagrees with the contract.");
     const tx = await jobs.acceptJob(this.dep.escrow, this.chain.wallets.provider, BigInt(jobId), verified.chainDigest);
     job.transactions.push({ step: "acceptJob", ...tx });
-    job.steps.push({ step: "accept", who: "supplier", tx,
+    job.steps.push({ step: "accept", who: "provider", tx,
       detail: "Re-derived the agreement from what the contract stored, matched it, and accepted on chain." });
     return job;
   }
@@ -282,7 +282,7 @@ export class Engine {
   }
 
   private describe(output: RecordRow[], verdict: string, flaw: FlawKind) {
-    return `Submitted ${output.length} rows. The supplier's own pre-submission check says ${verdict}.` +
+    return `Submitted ${output.length} rows. The provider's own pre-submission check says ${verdict}.` +
       (flaw === "none" ? "" : ` A deliberate "${flaw}" defect was requested for this demonstration.`);
   }
 
@@ -292,7 +292,7 @@ export class Engine {
     const self = check(job.source, output, job.source.length);
     const tx = await jobs.submitDelivery(this.dep.escrow, this.chain.wallets.provider, BigInt(jobId), output);
     job.transactions.push({ step: "submitDelivery", ...tx });
-    job.steps.push({ step: "submit", who: "supplier", tx, detail: this.describe(output, self.result.verdictName, used),
+    job.steps.push({ step: "submit", who: "provider", tx, detail: this.describe(output, self.result.verdictName, used),
       data: { deliveryDigest: canonicalDigest(output), selfCheck: self.result.verdictName, flaw: used } });
     return job;
   }
@@ -304,7 +304,7 @@ export class Engine {
     const tx = await jobs.submitAndSettle(this.dep.escrow, this.chain.wallets.provider, BigInt(jobId), output);
     const after = await this.readJob(jobId);
     job.transactions.push({ step: "submitAndSettle", ...tx });
-    job.steps.push({ step: "submit", who: "supplier", tx, detail: this.describe(output, self.result.verdictName, used),
+    job.steps.push({ step: "submit", who: "provider", tx, detail: this.describe(output, self.result.verdictName, used),
       data: { deliveryDigest: canonicalDigest(output), selfCheck: self.result.verdictName, flaw: used } });
     job.steps.push({ step: "settle", who: "the same transaction", tx,
       detail: `Settled atomically with the submission. The contract's policy returned ${after.verdict === 1 ? "PASS" : "FAIL"}; status is now ${after.status}.`,
@@ -343,12 +343,12 @@ export class Engine {
     const job = await this.createJob(scenarioId, opts);
     onStep?.(`Buyer proposed job ${job.jobId} with an approved checklist.`);
     await this.accept(job.jobId);
-    onStep?.("Supplier re-derived the agreement from the contract and accepted it.");
+    onStep?.("Provider agent re-derived the agreement from the contract and accepted it.");
     await this.fund(job.jobId);
     onStep?.("Buyer locked the payment in escrow.");
     if (scenario.submit) {
       await this.submitAndSettle(job.jobId);
-      onStep?.(`Supplier submitted; the contract checked and settled in the same transaction. ${(await this.readJob(job.jobId)).status}.`);
+      onStep?.(`Provider submitted; the contract checked and settled in the same transaction. ${(await this.readJob(job.jobId)).status}.`);
     } else {
       onStep?.("No delivery in this scenario; advancing local chain time past expiry.");
       await this.advanceTime(job.pack.payment.deliveryWindowSeconds + job.pack.payment.settlementWindowSeconds + 5);
@@ -362,11 +362,11 @@ export class Engine {
     const status = (await this.readJob(jobId)).status;
     if (status !== "CREATED") throw new Error(`Job ${jobId} is ${status}; the automatic path starts from CREATED.`);
     await this.accept(jobId);
-    onStep?.("Supplier re-derived the agreement from the contract and accepted it.");
+    onStep?.("Provider agent re-derived the agreement from the contract and accepted it.");
     await this.fund(jobId);
     onStep?.("Buyer locked the payment in escrow.");
     await this.submitAndSettle(jobId);
-    onStep?.(`Supplier delivered; the contract checked and settled in the same transaction. ${(await this.readJob(jobId)).status}.`);
+    onStep?.(`Provider delivered; the contract checked and settled in the same transaction. ${(await this.readJob(jobId)).status}.`);
     return this.get(jobId);
   }
 

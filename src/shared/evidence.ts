@@ -252,7 +252,7 @@ export function verifyBundle(b: EvidenceBundle): VerificationReport {
     `job ${b.job.jobId} vs terms ${terms.jobId}`);
   addConsistency("displayed buyer matches the terms", eq(b.job.buyer, terms.buyer),
     `${b.job.buyer} vs ${terms.buyer}`);
-  addConsistency("displayed supplier matches the terms", eq(b.job.provider, terms.provider),
+  addConsistency("displayed provider matches the terms", eq(b.job.provider, terms.provider),
     `${b.job.provider} vs ${terms.provider}`);
   addConsistency("displayed amount matches the terms", b.job.amountBaseUnits === terms.amount.toString(),
     `${b.job.amountBaseUnits} vs ${terms.amount}`);
@@ -326,7 +326,7 @@ export function verifyBundle(b: EvidenceBundle): VerificationReport {
       .map(([role, v]) => `${role}: recorded ${b.balanceDeltas?.[role]} vs movements ${v}`);
     addConsistency("balance changes equal the movements they are derived from",
       deltaProblems.length === 0,
-      deltaProblems.length ? deltaProblems.join("; ") : "buyer, supplier and escrow all reconcile");
+      deltaProblems.length ? deltaProblems.join("; ") : "buyer, provider and escrow all reconcile");
 
     // And the derived result must match the agreement and the job's state.
     const counts = expectedMovementCounts(b.job.status);
