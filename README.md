@@ -15,12 +15,17 @@ payment settles with no human reading either one. So who decides the work was ac
 buyer, who would rather not pay. Not the provider, who would rather be paid. Neither can judge its
 own case, and nobody is going to review ten thousand small jobs by hand.
 
-So they settle it first. Both sides approve an **acceptance pack**: a plain-language checklist, a
-coverage report saying which clauses software can actually check, and the payment and expiry
-policy. The payment goes into escrow, the work is delivered, and a contract runs exactly those
-rules against exactly the bytes it stored — then pays the provider or refunds the buyer.
+So they settle it first, in three beats.
 
-Nobody can overrule that answer, including whoever deployed the contract. That is a testable
+**1 · Agree — before any work starts.** Both sides approve an **acceptance pack**: a
+plain-language checklist, a coverage report saying which clauses software can actually check, and
+the payment and expiry policy.
+
+**2 · Check — against exactly what arrived.** The payment goes into escrow and the work is
+delivered. A contract runs those exact rules against the exact bytes it stored.
+
+**3 · Settle — on the result, by nobody.** It pays the provider or refunds the buyer on the
+answer. Nobody can overrule it, including whoever deployed the contract. That is a testable
 property of this code, not a slogan: see `tests/no-bypass.test.ts`.
 
 > **Local simulation.** Synthetic data, disposable accounts, a mock ERC-20 with no value, no real
