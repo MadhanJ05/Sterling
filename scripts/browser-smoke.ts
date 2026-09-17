@@ -408,6 +408,22 @@ async function run() {
     check("secondary and disclosure text meets WCAG AA contrast", contrast.offenders.length === 0,
       contrast.offenders.length ? contrast.offenders.join(" | ") : `worst measured ratio ${contrast.worst}:1`);
 
+    // ---- house style: no em dashes in anything the page renders
+    const emDash = await cdp.evaluate<{ count: number; samples: string[] }>(`(() => {
+      const walk = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+      const samples = []; let count = 0; let n;
+      while ((n = walk.nextNode())) {
+        const t = n.textContent || "";
+        const i = t.indexOf("\u2014");
+        if (i < 0) continue;
+        count++;
+        if (samples.length < 5) samples.push(t.slice(Math.max(0, i - 30), i + 30).trim());
+      }
+      return { count, samples };
+    })()`);
+    check("no em dashes in rendered copy", emDash.count === 0,
+      emDash.count ? emDash.samples.join(" | ") : "none found");
+
     // ---- keyboard accessibility
     const focusable = await cdp.evaluate<number>(
       `document.querySelectorAll('button:not([disabled]), a[href], summary, [tabindex]:not([tabindex="-1"])').length`,

@@ -157,4 +157,4 @@ export function formatCents(cents: string): string {
   return `${v / 100n}.${(v % 100n).toString().padStart(2, "0")}`;
 }
 
-export const short = (h?: string | null) => (h ? `${h.slice(0, 10)}…${h.slice(-6)}` : "—");
+export const short = (h?: string | null) => (h ? `${h.slice(0, 10)}…${h.slice(-6)}` : "none");

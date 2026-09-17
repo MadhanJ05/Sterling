@@ -146,7 +146,7 @@ export function App() {
   // rather than showing a half-empty page while ~2 MB arrives.
   const booting = STATIC_BUILD && !state;
   const scenarios = state?.scenarios ?? [];
-  const status = job?.onChain?.status ?? "—";
+  const status = job?.onChain?.status ?? "NONE";
   const decimals = state?.token?.decimals ?? 6;
   const symbol = state?.token?.symbol ?? "mUSD";
   const running = !!busy?.startsWith("auto");
@@ -199,7 +199,7 @@ export function App() {
         <h1 className="display">Agree on what counts as done.</h1>
         <p className="lede">
           Agents are starting to buy work from one another. A job goes out, a result comes back,
-          and payment settles — with no human reading either one.
+          and payment settles. No human reads either one.
         </p>
 
         <p className="tension">
@@ -226,16 +226,16 @@ export function App() {
         )}
       </header>
 
-      {/* How it works — the three beats the prose used to bury ------------- */}
+      {/* How it works: the three beats the prose used to bury -------------- */}
       <section className="bay beats">
         <ol className="grid">
           {[
             { n: "01", k: "Agree", h: "Before any work starts",
-              d: "Both sides approve a checklist of what finished work looks like — written so that software can check it, not so that a person can argue about it." },
+              d: "Both sides approve a checklist of what finished work looks like. It is written so that software can check it, not so that a person can argue about it." },
             { n: "02", k: "Check", h: "Against exactly what arrived",
               d: "The payment goes into escrow and the work is delivered. A contract runs those exact checks against the exact bytes it stored." },
             { n: "03", k: "Settle", h: "On the result, by nobody",
-              d: "It pays the provider or refunds the buyer on the answer. Nobody — including whoever deployed the contract — can overrule it." },
+              d: "It pays the provider or refunds the buyer on the answer. Nobody can overrule it, including whoever deployed the contract." },
           ].map((b) => (
             <li className="beat col-4" key={b.n}>
               <span className="beat-n">{b.n}</span>
@@ -264,7 +264,7 @@ export function App() {
               <div className="pad stack">
                 <p className="body-2">
                   All three beats, end to end, in one click. Checking and payment happen in the same
-                  transaction. The step list appears when the run finishes — it is a log, not a live
+                  transaction. The step list appears when the run finishes. It is a log, not a live
                   feed.
                 </p>
                 {running
@@ -285,7 +285,7 @@ export function App() {
               <div className="pad stack">
                 <p className="body-2">
                   Paste a few rows and the same fixed template is rebound to them: same four rules,
-                  new source, new agreement. Only this one template is supported — this is not a
+                  new source, new agreement. Only this one template is supported. This is not a
                   general-purpose acceptance editor.
                 </p>
                 <textarea
@@ -357,9 +357,9 @@ export function App() {
                   job, derived from its own receipts.
                   {state?.topUps > 0 && (
                     <> The buyer's test wallet has been refilled {state.topUps}{" "}
-                    {state.topUps === 1 ? "time" : "times"} so the demonstration could continue — mUSD is a
-                    valueless mock with an open faucet, so this is not income and is not part of any job's
-                    accounting.</>
+                    {state.topUps === 1 ? "time" : "times"} so the demonstration could continue. mUSD is
+                    a valueless mock with an open faucet, so this is not income and is not part of any
+                    job's accounting.</>
                   )}
                 </p>
                 <Fold label="Chain and contracts">
@@ -395,7 +395,7 @@ export function App() {
                 <span className="tag">Nothing selected</span>
                 <h2 className="title">Run a job above to see it here</h2>
                 <p className="note">
-                  Every job carries its own agreement, its own escrow and its own record — nothing is
+                  Every job carries its own agreement, its own escrow and its own record. Nothing is
                   shared between them, and one job never reaches two different outcomes.
                 </p>
               </div>
@@ -519,7 +519,7 @@ export function App() {
                       <div className="between">
                         <b>{blocked.label}</b>
                         <Chip tone={blocked.outcome === "REJECTED" ? "go" : "no"}>
-                          {blocked.outcome === "REJECTED" ? "blocked" : "ALLOWED — investigate"}
+                          {blocked.outcome === "REJECTED" ? "blocked" : "ALLOWED: investigate"}
                         </Chip>
                       </div>
                       <div className="n">Attempted: {blocked.attempted}</div>
@@ -547,7 +547,7 @@ export function App() {
                       you started yourself.
                     </p>
                     <p className="note">
-                      Both are in the repository. Clone it and run <code>npm start</code> — along
+                      Both are in the repository. Clone it and run <code>npm start</code>, along
                       with 201 automated tests, the headless-browser checks, and the offline
                       evidence verifier.
                     </p>
@@ -637,7 +637,7 @@ function ScopeBlock({ block, onRevise, busy }: { block: any; onRevise: () => voi
         <p className="advisory">
           There is no button that quietly deletes the clause, and no automatic path that revises it
           for you. The only way forward is an explicit scope revision, which produces a new pack
-          version where the clause is still listed, marked as excluded, with the reason attached — so
+          version where the clause is still listed, marked as excluded, with the reason attached, so
           both parties can see exactly what payment no longer depends on.
         </p>
         {block.revision?.needed && (
@@ -687,7 +687,7 @@ function PhaseJob({ job, decimals, symbol }: any) {
         ["Task", "Normalise a product catalogue: return every product once, keep its price, sort by product ID."],
         ["Offered", `${formatUnits(t?.amount ?? "0", decimals)} ${symbol} (test tokens, no value)`],
       ]} />
-      <Fold label={`Approved source — ${job.source?.length ?? 0} rows, supplied in shuffled order`}>
+      <Fold label={`Approved source: ${job.source?.length ?? 0} rows, supplied in shuffled order`}>
         <Rows rows={job.onChain?.source ?? []} />
       </Fold>
     </Phase>
@@ -743,7 +743,7 @@ function PhaseAgreement({ job, act, busy, status }: any) {
       </div>
       <p className="note">
         Before accepting, the provider re-derives the whole agreement from what the contract actually
-        stored — amount, source batch, token address, deadlines, every clause — and refuses on any
+        stored (amount, source batch, token address, deadlines, every clause) and refuses on any
         disagreement.
       </p>
 
